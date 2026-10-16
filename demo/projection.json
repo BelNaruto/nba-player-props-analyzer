@@ -1,0 +1,91 @@
+{
+ "data": {
+  "playerId": "1001",
+  "nextGame": {
+   "id": "999",
+   "date": "2026-10-22T23:30Z",
+   "name": "Sample Rivals at Demo City Hoopers",
+   "opponent": {
+    "id": "99",
+    "abbreviation": "RIV",
+    "name": "Sample Rivals"
+   },
+   "home": true
+  },
+  "opponentId": "99",
+  "gamesUsed": 60,
+  "adjustments": {
+   "opponentDefense": 1.04,
+   "pace": 1.02,
+   "home": true
+  },
+  "projection": {
+   "PTS": {
+    "projected": 26.1,
+    "stdDev": 6.1,
+    "perMinute": 0.768,
+    "line": 24.5,
+    "overProbability": 0.6031,
+    "underProbability": 0.3969,
+    "lean": "over",
+    "fairOdds": {
+     "over": -152,
+     "under": 152
+    }
+   },
+   "REB": {
+    "projected": 5.2,
+    "stdDev": 2.4,
+    "perMinute": 0.153,
+    "line": null,
+    "overProbability": null,
+    "underProbability": null,
+    "lean": null,
+    "fairOdds": null
+   },
+   "AST": {
+    "projected": 7.4,
+    "stdDev": 2.6,
+    "perMinute": 0.218,
+    "line": 6.5,
+    "overProbability": 0.6365,
+    "underProbability": 0.3635,
+    "lean": "over",
+    "fairOdds": {
+     "over": -175,
+     "under": 175
+    }
+   },
+   "3PM": {
+    "projected": 3.1,
+    "stdDev": 1.6,
+    "perMinute": 0.091,
+    "line": null,
+    "overProbability": null,
+    "underProbability": null,
+    "lean": null,
+    "fairOdds": null
+   },
+   "PRA": {
+    "projected": 38.7,
+    "stdDev": 8.0,
+    "perMinute": 1.138,
+    "line": 40.5,
+    "overProbability": 0.4108,
+    "underProbability": 0.5892,
+    "lean": "under",
+    "fairOdds": {
+     "over": 143,
+     "under": -143
+    }
+   }
+  }
+ },
+ "meta": {
+  "league": "nba",
+  "generatedAt": "2026-10-16T12:00:00Z",
+  "cacheTtlSeconds": 300,
+  "_note": "SAMPLE DATA for demo mode",
+  "basedOnSeason": "2025-26"
+ }
+}

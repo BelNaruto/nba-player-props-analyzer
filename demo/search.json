@@ -1,0 +1,39 @@
+{
+ "data": [
+  {
+   "id": "1001",
+   "name": "Demo Player",
+   "position": "G",
+   "jersey": "7",
+   "headshot": null,
+   "team": {
+    "id": "0",
+    "abbreviation": "DEM",
+    "name": "Demo City Hoopers",
+    "shortName": "Hoopers",
+    "logo": null
+   }
+  },
+  {
+   "id": "1002",
+   "name": "Sample Shooter",
+   "position": "F",
+   "jersey": "23",
+   "headshot": null,
+   "team": {
+    "id": "0",
+    "abbreviation": "DEM",
+    "name": "Demo City Hoopers",
+    "shortName": "Hoopers",
+    "logo": null
+   }
+  }
+ ],
+ "meta": {
+  "league": "nba",
+  "generatedAt": "2026-10-16T12:00:00Z",
+  "cacheTtlSeconds": 300,
+  "_note": "SAMPLE DATA for demo mode",
+  "count": 2
+ }
+}
