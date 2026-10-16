@@ -1,0 +1,1 @@
+{ "name": "nba-player-props-analyzer", "version": "1.0.0", "description": "NBA player props research: hit rates, trends and next-game projections", "main": "server.js", "scripts": { "start": "node server.js" }, "engines": { "node": ">=18" }, "keywords": ["nba","player-props","basketball","sports-betting","fantasy-basketball"], "license": "MIT" }
