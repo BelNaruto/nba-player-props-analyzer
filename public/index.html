@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NBA Player Props Analyzer – Hit Rates, Trends & Projections</title>
+<meta name="description" content="Free NBA player props research tool: hit rates for the last 5, 10 and 20 games, home/away splits, over/under streaks and projected stat lines with over/under probabilities.">
+<style>
+  :root { --bg:#0b0f17; --card:#131a26; --line:#233047; --text:#e8eef8; --muted:#8fa0b8; --over:#22c55e; --under:#ef4444; --accent:#f97316; --amber:#f59e0b; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14.5px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:18px 26px; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  header h1 { margin:0; font-size:20px; }
+  .tag { color:var(--muted); font-size:12px; }
+  .demo { background:var(--amber); color:#111; font-weight:700; font-size:12px; padding:3px 8px; border-radius:6px; display:none; }
+  main { max-width:1180px; margin:0 auto; padding:20px; display:grid; grid-template-columns:320px 1fr; gap:18px; }
+  @media (max-width:900px) { main { grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  label { display:block; font-size:12px; color:var(--muted); margin:10px 0 4px; }
+  input, select { width:100%; padding:10px 12px; border-radius:9px; border:1px solid var(--line); background:#0e1420; color:var(--text); font-size:14.5px; }
+  button.go { margin-top:12px; width:100%; padding:11px; border:0; border-radius:9px; background:var(--accent); color:#1a0d02; font-weight:800; font-size:15px; cursor:pointer; }
+  .results { margin-top:8px; display:grid; gap:6px; max-height:260px; overflow:auto; }
+  .pl { display:flex; gap:10px; align-items:center; padding:8px; border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+  .pl.on { border-color:var(--accent); background:rgba(249,115,22,.08); }
+  .pl img, .avatar { width:36px; height:36px; border-radius:50%; background:#1d2738; object-fit:cover; flex:none; display:grid; place-items:center; font-weight:800; color:var(--muted); font-size:13px; }
+  .small { font-size:12px; color:var(--muted); }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  h2 { margin:0; font-size:20px; }
+  .hero { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:center; }
+  .pill { display:inline-block; padding:3px 10px; border-radius:999px; font-weight:800; font-size:12px; }
+  .pill.over { background:rgba(34,197,94,.15); color:var(--over); } .pill.under { background:rgba(239,68,68,.15); color:var(--under); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-top:14px; }
+  .hit { background:#0e1420; border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
+  .hit .l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  .hit .v { font-size:24px; font-weight:800; }
+  .hit .s { font-size:12px; color:var(--muted); }
+  .bar { height:6px; background:#1d2738; border-radius:4px; overflow:hidden; margin-top:6px; }
+  .bar i { display:block; height:100%; }
+  .proj { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
+  .prob { display:flex; height:28px; border-radius:8px; overflow:hidden; font-size:12px; font-weight:800; margin-top:8px; }
+  .prob div { display:grid; place-items:center; }
+  svg text { fill:var(--muted); font-size:11px; }
+  .empty { color:var(--muted); text-align:center; padding:50px 20px; }
+  footer { text-align:center; color:var(--muted); font-size:12px; padding:10px 20px 30px; }
+  a { color:#7dd3fc; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏀 NBA Player Props Analyzer</h1>
+  <span class="tag">Hit rates · trends · projections · NBA, WNBA, G League</span>
+  <span class="demo" id="demo">DEMO MODE – sample data</span>
+</header>
+<main>
+  <section class="card">
+    <label for="league">League</label>
+    <select id="league"><option value="nba">NBA</option><option value="wnba">WNBA</option><option value="gleague">G League</option></select>
+    <label for="q">Find a player</label>
+    <input id="q" placeholder="e.g. curry, doncic, wembanyama" autocomplete="off">
+    <div class="results" id="results"></div>
+    <div class="row2">
+      <div><label for="stat">Stat</label>
+        <select id="stat">
+          <option value="PTS">Points</option><option value="REB">Rebounds</option><option value="AST">Assists</option>
+          <option value="3PM">3-pointers made</option><option value="PRA">Pts+Reb+Ast</option><option value="PR">Pts+Reb</option>
+          <option value="PA">Pts+Ast</option><option value="RA">Reb+Ast</option><option value="STL">Steals</option>
+          <option value="BLK">Blocks</option><option value="STOCKS">Steals+Blocks</option><option value="TO">Turnovers</option><option value="FPTS">Fantasy pts</option>
+        </select></div>
+      <div><label for="line">Line</label><input id="line" type="number" step="0.5" value="24.5"></div>
+    </div>
+    <button class="go" id="go">Analyze prop</button>
+    <p class="small">For research and entertainment. Past results don't guarantee future outcomes.</p>
+  </section>
+  <section class="card" id="out"><div class="empty">Search a player, pick a stat and a line, then hit <b>Analyze prop</b>.</div></section>
+</main>
+<footer>Data: <a href="https://rapidapi.com/belchiorarkad-FqvHs2EDOtP/api/api-basketball-nba" target="_blank" rel="noopener">Basketball API (NBA, WNBA, G League, NCAA)</a> · Support: <a href="https://t.me/pintoflow" target="_blank" rel="noopener">Telegram @pintoflow</a> · Not affiliated with the NBA.</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const pct = (x) => x == null ? '–' : Math.round(x * 100) + '%';
+const odds = (o) => o == null ? '–' : (o > 0 ? '+' + o : String(o));
+let player = null, timer;
+
+async function api(route, params = {}) {
+  params.league = $('league').value;
+  const r = await fetch('/api' + route + '?' + new URLSearchParams(params));
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || j.error) throw new Error(j.error?.message || `Error ${r.status}`);
+  return j;
+}
+
+function initials(n) { return String(n || '?').split(' ').map((w) => w[0]).slice(0, 2).join(''); }
+function avatar(p) { return p.headshot ? `<img src="${esc(p.headshot)}" alt="">` : `<span class="avatar">${esc(initials(p.name))}</span>`; }
+
+$('q').addEventListener('input', () => {
+  clearTimeout(timer);
+  const q = $('q').value.trim();
+  if (q.length < 2) return ($('results').innerHTML = '');
+  timer = setTimeout(async () => {
+    try {
+      const { data } = await api('/v2/players/search', { q });
+      $('results').innerHTML = data.length ? data.map((p, i) => `<div class="pl" data-i="${i}">${avatar(p)}<div><b>${esc(p.name)}</b><div class="small">${esc(p.team?.abbreviation || '')} · ${esc(p.position || '')} #${esc(p.jersey || '')}</div></div></div>`).join('') : '<div class="small">No active player found.</div>';
+      $('results').onclick = (e) => {
+        const el = e.target.closest('.pl'); if (!el) return;
+        player = data[el.dataset.i];
+        document.querySelectorAll('.pl').forEach((x) => x.classList.toggle('on', x === el));
+      };
+    } catch (err) { $('results').innerHTML = `<div class="small">${esc(err.message)}</div>`; }
+  }, 300);
+});
+
+$('go').addEventListener('click', async () => {
+  if (!player) { $('out').innerHTML = '<div class="empty">Pick a player from the search results first.</div>'; return; }
+  const stat = $('stat').value, line = $('line').value;
+  $('out').innerHTML = '<div class="empty">Crunching the numbers…</div>';
+  const [t, p] = await Promise.allSettled([
+    api(`/v2/players/${player.id}/trends`, { stat, line }),
+    api(`/v2/players/${player.id}/projection`, { lines: `${stat}:${line}` }),
+  ]);
+  render(stat, Number(line), t.value?.data, p.value?.data, t.reason || p.reason);
+});
+
+function hitCard(label, b) {
+  if (!b || !b.games) return `<div class="hit"><div class="l">${label}</div><div class="v">–</div><div class="s">no games</div></div>`;
+  const c = b.overRate >= 0.5 ? 'var(--over)' : 'var(--under)';
+  return `<div class="hit"><div class="l">${label}</div><div class="v" style="color:${c}">${pct(b.overRate)}</div>
+    <div class="s">avg ${b.average} · ${Math.round(b.overRate * b.games)}/${b.games} over</div><div class="bar"><i style="width:${b.overRate * 100}%;background:${c}"></i></div></div>`;
+}
+
+function chart(games, line) {
+  if (!games?.length) return '';
+  const g = [...games].reverse(), W = 640, H = 210, pad = 26, bw = (W - pad * 2) / g.length;
+  const max = Math.max(line * 1.4, ...g.map((x) => x.value)) || 1;
+  const y = (v) => H - pad - (v / max) * (H - pad * 2 - 14);
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Last ${g.length} games vs line">
+    ${g.map((x, i) => `<rect x="${pad + i * bw + 6}" y="${y(x.value)}" width="${bw - 12}" height="${H - pad - y(x.value)}" rx="4" fill="${x.value > line ? 'var(--over)' : 'var(--under)'}" opacity=".9"/>
+      <text x="${pad + i * bw + bw / 2}" y="${y(x.value) - 5}" text-anchor="middle" style="fill:var(--text);font-weight:700">${x.value}</text>
+      <text x="${pad + i * bw + bw / 2}" y="${H - 8}" text-anchor="middle">${x.home ? 'vs' : '@'} ${esc(x.opponent)}</text>`).join('')}
+    <line x1="${pad}" x2="${W - pad}" y1="${y(line)}" y2="${y(line)}" stroke="var(--accent)" stroke-dasharray="5 4" stroke-width="2"/>
+    <text x="${W - pad}" y="12" text-anchor="end" style="fill:var(--accent);font-weight:700">- - line ${line}</text></svg>`;
+}
+
+function render(stat, line, t, p, err) {
+  const pr = p?.projection?.[stat];
+  const ng = p?.nextGame;
+  const lean = pr?.lean;
+  $('out').innerHTML = `
+    <div class="hero">
+      <div style="display:flex;gap:12px;align-items:center">${avatar(player)}<div><h2>${esc(player.name)}</h2>
+      <div class="small">${esc(player.team?.name || '')} · ${stat} ${line}</div></div></div>
+      ${lean ? `<span class="pill ${lean}">Model lean: ${lean.toUpperCase()}</span>` : ''}
+    </div>
+    ${pr ? `<div class="proj">
+      <div class="hit"><div class="l">Projected ${stat}${ng ? ` · ${ng.home ? 'vs' : '@'} ${esc(ng.opponent?.abbreviation)}` : ''}</div>
+        <div class="v">${pr.projected}</div><div class="s">± ${pr.stdDev} std dev · based on ${p.gamesUsed ?? '–'} games</div></div>
+      <div class="hit"><div class="l">Over / under probability</div>
+        <div class="prob"><div style="width:${(pr.overProbability || 0) * 100}%;background:var(--over);color:#04210f">O ${pct(pr.overProbability)}</div>
+        <div style="flex:1;background:var(--under);color:#2a0606">U ${pct(pr.underProbability)}</div></div>
+        <div class="s" style="margin-top:6px">Fair odds: over ${odds(pr.fairOdds?.over)} · under ${odds(pr.fairOdds?.under)}</div></div>
+      <div class="hit"><div class="l">Matchup adjustments</div>
+        <div class="s" style="margin-top:6px">Opp. defence ×${p.adjustments?.opponentDefense ?? '–'}<br>Pace ×${p.adjustments?.pace ?? '–'}<br>${p.adjustments?.home ? 'Home game' : 'Road game'}${ng?.date ? ' · ' + new Date(ng.date).toLocaleDateString() : ''}</div></div>
+    </div>` : `<p class="small">No projection available${err ? ': ' + esc(err.message) : ''}.</p>`}
+    ${t ? `<h3 style="margin:20px 0 0;font-size:15px">Hit rate over ${line} ${stat} <span class="small">· streak: ${esc(t.currentStreak || '–')}</span></h3>
+    <div class="grid">${hitCard('Last 5', t.last5)}${hitCard('Last 10', t.last10)}${hitCard('Last 20', t.last20)}${hitCard('Season', t.season)}${hitCard('Home', t.home)}${hitCard('Away', t.away)}${t.vsOpponent ? hitCard('vs opponent', t.vsOpponent) : ''}</div>
+    <h3 style="margin:20px 0 6px;font-size:15px">Last ${t.recentGames?.length || 0} games</h3>${chart(t.recentGames, line)}` : ''}`;
+}
+
+fetch('/api/config').then((r) => r.json()).then((c) => {
+  if (!c.demo) return;
+  $('demo').style.display = 'inline-block';
+  $('q').value = 'demo'; $('q').dispatchEvent(new Event('input'));
+});
+</script>
+</body>
+</html>
